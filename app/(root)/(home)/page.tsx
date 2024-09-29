@@ -1,14 +1,6 @@
-import Client from "@/components/Client";
-
-
-
 const Home = () => {
-  console.log("where do i render");
-  return (
+return (
     <div>
-      <h1 className="h1-bold">NextJs 14 we&apos;re coming!</h1>
-
-      <Client />
     </div>
   );
 };
