@@ -30,7 +30,6 @@ export const metadata: Metadata = {
     icon: "/assets/images/site-logo.svg",
   },
 };
-console.log(inter);
 export default function RootLayout({
   children,
 }: Readonly<{
