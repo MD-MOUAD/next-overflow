@@ -9,23 +9,43 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const [mode, setMode] = useState("");
+  const [mode, setMode] = useState(localStorage.getItem("theme") || "system");
 
   useEffect(() => {
     const handleThemeChange = () => {
-      if (mode === "dark") {
-        document.documentElement.classList.add("light");
-        document.documentElement.classList.remove("dark");
-      } else {
+      if (
+        mode === "dark" ||
+        (mode === "system" &&
+          window.matchMedia("prefers-color-scheme: dark").matches)
+      ) {
         document.documentElement.classList.add("dark");
-        document.documentElement.classList.remove("light");
+      } else {
+        document.documentElement.classList.remove("dark");
       }
     };
     handleThemeChange();
+    const mediaQueryList = window.matchMedia("prefers-color-scheme: dark");
+    const handleMediaChange = (event: MediaQueryListEvent) => {
+      setMode(event.matches ? "dark" : "light");
+    };
+    mediaQueryList.addEventListener("change", handleMediaChange);
+
+    return () => {
+      mediaQueryList.removeEventListener("change", handleMediaChange);
+    };
   }, [mode]);
 
+  const setThemeMode = (newMode: string) => {
+    setMode(newMode);
+    if (newMode === "system") {
+      localStorage.removeItem("theme");
+    } else {
+      localStorage.setItem("theme", newMode);
+    }
+  };
+
   return (
-    <ThemeContext.Provider value={{ mode, setMode }}>
+    <ThemeContext.Provider value={{ mode, setMode: setThemeMode }}>
       {children}
     </ThemeContext.Provider>
   );
