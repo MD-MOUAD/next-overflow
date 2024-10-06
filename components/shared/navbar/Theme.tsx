@@ -1,33 +1,51 @@
 "use client";
+
 import { useTheme } from "@/context/ThemeProvider";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Menubar,
   MenubarContent,
   MenubarItem,
   MenubarMenu,
-  MenubarSeparator,
-  MenubarShortcut,
   MenubarTrigger,
 } from "@/components/ui/menubar";
 import Image from "next/image";
 import { themes } from "@/constants";
 
 const Theme = () => {
-  const { mode, setMode } = useTheme();
+  const { theme, toggleTheme } = useTheme();
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    if (theme === "system") {
+      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+      setIsDarkMode(mediaQuery.matches);
+
+      const handleChange = (e: MediaQueryListEvent) => {
+        setIsDarkMode(e.matches);
+      };
+
+      mediaQuery.addEventListener("change", handleChange);
+
+      return () => {
+        mediaQuery.removeEventListener("change", handleChange);
+      };
+    } else {
+      setIsDarkMode(theme === "dark");
+    }
+  }, [theme]);
+
   return (
     <Menubar className="relative border-none bg-transparent shadow-none dark:bg-transparent">
       <MenubarMenu>
         <MenubarTrigger className="focus:bg-light-900 data-[state=open]:bg-light-900 dark:focus:bg-dark-200 dark:data-[state=open]:bg-dark-200">
-          {mode === "dark" ||
-          (mode === "system" &&
-            window.matchMedia("prefers-color-scheme: dark").matches) ? (
+          {isDarkMode ? (
             <Image
               src="/assets/icons/moon.svg"
               alt="moon"
               width={20}
               height={20}
-              className="active-theme"
+              className={`${theme !== "system" && "active-theme"}`}
             />
           ) : (
             <Image
@@ -35,7 +53,7 @@ const Theme = () => {
               alt="sun"
               width={20}
               height={20}
-              className="active-theme"
+              className={`${theme !== "system" && "active-theme"}`}
             />
           )}
         </MenubarTrigger>
@@ -45,7 +63,7 @@ const Theme = () => {
               key={item.value}
               className="flex items-center gap-4 px-2.5 py-2 dark:focus:bg-dark-400"
               onClick={() => {
-                setMode(item.value);
+                toggleTheme(item.value);
               }}
             >
               <Image
@@ -53,18 +71,19 @@ const Theme = () => {
                 alt={item.value}
                 width={16}
                 height={16}
-                className={`${mode === item.value && "active-theme"}`}
+                className={`${theme === item.value && "active-theme"}`}
               />
               <p
-                className={`body-semibold  text-light-500 ${mode === item.value ? "text-primary-500" : "text-dark100_light900"}`}
+                className={`body-semibold text-light-500 ${
+                  theme === item.value
+                    ? "text-primary-500"
+                    : "text-dark100_light900"
+                }`}
               >
                 {item.label}
               </p>
             </MenubarItem>
           ))}
-          {/* <MenubarItem>dark</MenubarItem>
-          <MenubarItem>light</MenubarItem>
-          <MenubarItem>system</MenubarItem> */}
         </MenubarContent>
       </MenubarMenu>
     </Menubar>

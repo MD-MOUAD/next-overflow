@@ -1,4 +1,17 @@
 import { BADGE_CRITERIA } from "@/constants";
+
+export type Theme = "light" | "dark" | "system";
+
+export interface ThemeItem {
+  value: Theme;
+  label: string;
+  icon: string;
+}
+export interface ThemeContextType {
+  theme : Theme;
+  toggleTheme: (newTheme: Theme) => void
+}
+
 export interface SidebarLink {
   imgURL: string;
   route: string;
