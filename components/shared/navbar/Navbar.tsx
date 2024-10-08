@@ -17,7 +17,7 @@ const Navbar = () => {
           alt="NextFlow"
         />
         <p className="h2-bold font-spaceGrotesk text-dark-100 dark:text-light-900 max-sm:hidden">
-          Next <span className="text-primary-500">OverFlow</span>
+          Next <span className="text-primary-500">Overflow</span>
         </p>
       </Link>
 

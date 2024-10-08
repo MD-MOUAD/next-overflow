@@ -90,27 +90,26 @@ const MobileNav = () => {
             <NavContent />
           </SheetClose>
         </div>
-        <div>
-          <SignedOut>
-            <div className="flex flex-col gap-3">
-              <SheetClose asChild>
-                <Link href="/sign-in">
-                  <Button className="btn-secondary min-h-[41px] w-full rounded-lg px-4 py-3 font-semibold shadow-none">
-                    <span className="primary-text-gradient">Log In</span>
-                  </Button>
-                </Link>
-              </SheetClose>
+        <SignedOut>
+          <div className="flex flex-col gap-3">
+            <SheetClose asChild>
+              <Link href="/sign-in">
+                <Button className="btn-secondary min-h-[41px] w-full rounded-lg px-4 py-3 font-semibold shadow-none">
+                  <span className="primary-text-gradient">Log In</span>
+                </Button>
+              </Link>
+            </SheetClose>
 
-              <SheetClose asChild>
-                <Link href="/sign-up">
-                  <Button className="light-border-2 btn-tertiary text-dark400_light900 min-h-[41px] w-full rounded-lg border px-4 py-3 font-semibold shadow-none">
-                    Sign Up
-                  </Button>
-                </Link>
-              </SheetClose>
-            </div>
-          </SignedOut>
-        </div>
+            <SheetClose asChild>
+              <Link href="/sign-up">
+                <Button className="light-border-2 btn-tertiary text-dark400_light900 min-h-[41px] w-full rounded-lg border px-4 py-3 font-semibold shadow-none">
+                  Sign Up
+                </Button>
+              </Link>
+            </SheetClose>
+          </div>
+        </SignedOut>
+
       </SheetContent>
     </Sheet>
   );
