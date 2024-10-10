@@ -5,7 +5,6 @@ import {
   SheetContent,
   SheetClose,
   SheetTrigger,
-  SheetTitle,
 } from "@/components/ui/sheet";
 import Image from "next/image";
 import Link from "next/link";
@@ -28,27 +27,25 @@ const NavContent = () => {
 
         return (
           <SheetClose asChild key={item.route}>
-            <SheetTitle>
-              <Link
-                href={item.route}
-                className={`${
-                  isActive
-                    ? "primary-gradient rounded-lg text-light-900"
-                    : "text-dark300_light900 bg-transparent "
-                } flex items-center justify-start gap-4 p-4`}
-              >
-                <Image
-                  src={item.imgURL}
-                  alt={item.label}
-                  width={20}
-                  height={20}
-                  className={`${isActive ? "" : "invert-colors"}`}
-                />
-                <p className={`${isActive ? "base-bold" : "base-medium"}`}>
-                  {item.label}
-                </p>
-              </Link>
-            </SheetTitle>
+            <Link
+              href={item.route}
+              className={`${
+                isActive
+                  ? "primary-gradient rounded-lg text-light-900"
+                  : "text-dark300_light900"
+              } flex items-center justify-start gap-4 bg-transparent p-4`}
+            >
+              <Image
+                src={item.imgURL}
+                alt={item.label}
+                width={20}
+                height={20}
+                className={`${isActive ? "" : "invert-colors"}`}
+              />
+              <p className={`${isActive ? "base-bold" : "base-medium"}`}>
+                {item.label}
+              </p>
+            </Link>
           </SheetClose>
         );
       })}
@@ -85,31 +82,32 @@ const MobileNav = () => {
             Dev <span className="text-primary-500">Overflow</span>
           </p>
         </Link>
-        <div className="no-scrollbar flex grow flex-col justify-between overflow-y-auto">
+        <div className="no-scrollbar flex grow flex-col justify-between ">
           <SheetClose asChild>
             <NavContent />
           </SheetClose>
         </div>
-        <SignedOut>
-          <div className="flex flex-col gap-3">
-            <SheetClose asChild>
-              <Link href="/sign-in">
-                <Button className="btn-secondary min-h-[41px] w-full rounded-lg px-4 py-3 font-semibold shadow-none">
-                  <span className="primary-text-gradient">Log In</span>
-                </Button>
-              </Link>
-            </SheetClose>
+        <div className="mt-5">
+          <SignedOut>
+            <div className="flex flex-col gap-3">
+              <SheetClose asChild>
+                <Link href="/sign-in">
+                  <Button className="btn-secondary min-h-[41px] w-full rounded-lg px-4 py-3 font-semibold shadow-none">
+                    <span className="primary-text-gradient">Log In</span>
+                  </Button>
+                </Link>
+              </SheetClose>
 
-            <SheetClose asChild>
-              <Link href="/sign-up">
-                <Button className="light-border-2 btn-tertiary text-dark400_light900 min-h-[41px] w-full rounded-lg border px-4 py-3 font-semibold shadow-none">
-                  Sign Up
-                </Button>
-              </Link>
-            </SheetClose>
-          </div>
-        </SignedOut>
-
+              <SheetClose asChild>
+                <Link href="/sign-up">
+                  <Button className="light-border-2 btn-tertiary text-dark400_light900 min-h-[41px] w-full rounded-lg border px-4 py-3 font-semibold shadow-none">
+                    Sign Up
+                  </Button>
+                </Link>
+              </SheetClose>
+            </div>
+          </SignedOut>
+        </div>
       </SheetContent>
     </Sheet>
   );

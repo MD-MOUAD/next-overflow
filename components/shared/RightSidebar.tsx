@@ -24,6 +24,11 @@ const RightSidebar = () => {
       title:
         "What are the benefits and trade-offs of using Server-Side Rendering (SSR) in Next.js?",
     },
+    {
+      _id: "5",
+      title:
+        "ReactJs or NextJs for begginers i ask for advice",
+    },
   ];
   const popularTags = [
     { _id: "1", name: "javascript", totalQuestions: 4 },
