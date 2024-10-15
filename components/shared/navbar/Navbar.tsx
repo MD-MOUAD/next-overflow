@@ -16,8 +16,8 @@ const Navbar = () => {
           height={23}
           alt="NextFlow"
         />
-        <p className="h3-bold font-spaceGrotesk text-dark-100 dark:text-light-900 max-sm:hidden">
-          Next <span className="text-primary-500">Overflow</span>
+        <p className="h2-bold font-spaceGrotesk text-dark-100 dark:text-light-900 max-sm:hidden">
+          Next<span className="text-primary-500">Overflow</span>
         </p>
       </Link>
 

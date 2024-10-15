@@ -5,72 +5,11 @@ import NoResult from "@/components/shared/NoResult";
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filters";
+import { getQuestions } from "@/lib/actions/question.action";
 import Link from "next/link";
 
-const questions = [
-  {
-    _id: "1",
-    title:
-      "What are the differences between functional and class components in React?",
-    tags: [
-      { _id: "t5", name: "React" },
-      { _id: "t6", name: "Components" },
-    ],
-    author: {
-      _id: "a2",
-      name: "Mouad Khanouch",
-      picture: "https://avatars.githubusercontent.com/u/125469605?v=4",
-      clerkId: "MouadID",
-    },
-    upvotes: ["user5", "user6", "user7"],
-    views: 690,
-    answers: [{}],
-    createdAt: new Date("2024-09-15"),
-    clerkId: null,
-  },
-  {
-    _id: "2",
-    title: "How do I implement authentication in Next.js?",
-    tags: [
-      { _id: "t1", name: "Next.js" },
-      { _id: "t2", name: "Authentication" },
-    ],
-    author: {
-      _id: "a1",
-      name: "John Doe",
-      picture:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTo_R_vlnUz9UhylMPCccagw4dMqhbs4UMPAA&s",
-      clerkId: "AlexID",
-    },
-    upvotes: ["user1", "user2"],
-    views: 152000,
-    answers: [],
-    createdAt: new Date("2024-09-01"),
-    clerkId: "clerk123",
-  },
-  {
-    _id: "3",
-    title: "How to fetch data in React using useEffect?",
-    tags: [
-      { _id: "t3", name: "React" },
-      { _id: "t4", name: "Hooks" },
-    ],
-    author: {
-      _id: "a3",
-      name: "Alex Smith",
-      picture:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkhxsi-ft_LrsZ5eANW_uJWdzPNU41QOYxUA&s",
-      clerkId: "AlexID",
-    },
-    upvotes: ["user4"],
-    views: 3500502,
-    answers: [{}],
-    createdAt: new Date("2023-10-01"),
-    clerkId: null,
-  },
-];
-
-const Home = () => {
+const Home = async () => {
+  const { questions } = await getQuestions({});
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
