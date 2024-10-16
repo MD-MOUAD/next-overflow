@@ -53,11 +53,27 @@ export const getQuestions = async (params: GetQuestionsParams) => {
   try {
     connectToDatabase();
 
-    // const { searchQuery, filter, page = 1, pageSize = 10 } = params;
+    const { filter } = params;
+    let sortOptions = {};
+
+    switch (filter) {
+      case "newest":
+        sortOptions = { createdAt: - 1 }
+        break;
+      case "frequent":
+        sortOptions = { views: -1 }
+        break;
+      // case "unanswered":
+      //   query.answers = { $size: 0 }
+      //   break;
+      default:
+        break;
+    }
+  
     const questions = await Question.find({})
       .populate({ path: "tags", model: Tag })
       .populate({ path: "author", model: User })
-      .sort({createdAt: -1});
+      .sort(sortOptions);
     return { questions };
   } catch (error) {
     console.log(error);
