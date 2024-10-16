@@ -15,6 +15,7 @@ export const connectToDatabase = async () => {
   if (isConnected) {
     return console.log("MongoDb is already connected");
   }
+
   try {
     await mongoose.connect(MONGODB_URI, { dbName: "nextOverflow" });
     isConnected = true;
