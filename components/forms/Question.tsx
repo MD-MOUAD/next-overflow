@@ -21,9 +21,8 @@ import { Editor } from "@tinymce/tinymce-react";
 import { useTheme } from "@/context/ThemeProvider";
 import { Badge } from "../ui/badge";
 import Image from "next/image";
-import { cerateQuestion } from "@/lib/actions/question.action";
+import { cerateQuestion } from "@/lib/actions/question.actions";
 import { usePathname, useRouter } from "next/navigation";
-
 
 interface Props {
   mongoUserId: string;
@@ -57,8 +56,8 @@ const Question = ({ mongoUserId }: Props) => {
         author: JSON.parse(mongoUserId),
         path: pathname,
       });
-      
-      router.push("/")
+
+      router.push("/");
     } catch (error) {
       console.log(error);
     } finally {
