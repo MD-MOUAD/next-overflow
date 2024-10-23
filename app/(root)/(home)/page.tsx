@@ -5,11 +5,11 @@ import NoResult from "@/components/shared/NoResult";
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filters";
-import { getQuestions } from "@/lib/actions/question.action";
+import { getQuestions } from "@/lib/actions/question.actions";
 import Link from "next/link";
 
 const Home = async () => {
-  const { questions } = await getQuestions({});
+  const { questions } = await getQuestions({ filter: "newest" });
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
@@ -28,13 +28,17 @@ const Home = async () => {
           placeholder="Search questions..."
           otherClasses="flex-1"
         />
+        {/* medium & small devices filters */}
         <Filter
           filters={HomePageFilters}
           otherClasses="min-h-[56px] sm:min-w-[170px]"
           containerClasses="hidden max-md:flex"
         />
       </div>
+
+      {/* larger devices filters */}
       <HomeFilters />
+
       <div className="mt-10 flex w-full flex-col gap-6">
         {questions.length > 0 ? (
           questions.map((question) => (
