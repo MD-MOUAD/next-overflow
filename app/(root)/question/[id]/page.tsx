@@ -6,7 +6,7 @@ import { formatAndDivideNumber, getTimestamp } from "@/lib/utils";
 import Metric from "@/components/shared/Metric";
 import ParseHtml from "@/components/shared/ParseHtml";
 
-const Page = async ({ params, searchParams }) => {
+const Page = async ({ params }: { params: { id: string } }) => {
   const question = await getQuestionById({ questionId: params.id });
   return (
     <>
