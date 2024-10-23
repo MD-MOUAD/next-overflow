@@ -5,7 +5,11 @@ import Question from "../database/question.model";
 import Tag from "../database/tag.model";
 import User from "../database/user.model";
 import { connectToDatabase } from "../mongoose";
-import { CreateQuestionParams, GetQuestionsParams } from "./shared.types";
+import {
+  CreateQuestionParams,
+  GetQuestionByIdParams,
+  GetQuestionsParams,
+} from "./shared.types";
 
 export const cerateQuestion = async (params: CreateQuestionParams) => {
   try {
@@ -42,7 +46,7 @@ export const cerateQuestion = async (params: CreateQuestionParams) => {
     revalidatePath(path);
 
     // Increment author's reputation by +5 for creating a question
-    await User.findByIdAndUpdate(author, { $inc: { reputation: 5 }})
+    await User.findByIdAndUpdate(author, { $inc: { reputation: 5 } });
     // TODO: increment authors reputation by +5 points for creating a question.
   } catch (error) {
     console.log(error);
@@ -58,10 +62,10 @@ export const getQuestions = async (params: GetQuestionsParams) => {
 
     switch (filter) {
       case "newest":
-        sortOptions = { createdAt: - 1 }
+        sortOptions = { createdAt: -1 };
         break;
       case "frequent":
-        sortOptions = { views: -1 }
+        sortOptions = { views: -1 };
         break;
       // case "unanswered":
       //   query.answers = { $size: 0 }
@@ -69,12 +73,31 @@ export const getQuestions = async (params: GetQuestionsParams) => {
       default:
         break;
     }
-  
+
     const questions = await Question.find({})
       .populate({ path: "tags", model: Tag })
       .populate({ path: "author", model: User })
       .sort(sortOptions);
     return { questions };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const getQuestionById = async (params: GetQuestionByIdParams) => {
+  try {
+    connectToDatabase();
+    const { questionId } = params;
+    const question = await Question.findById(questionId)
+      .populate({ path: "tags", model: Tag, select: "_id name" })
+      .populate({
+        path: "author",
+        model: User,
+        select: "_id clerkId name picture",
+      });
+
+    return question;
   } catch (error) {
     console.log(error);
     throw error;
