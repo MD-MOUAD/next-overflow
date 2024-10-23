@@ -1,8 +1,9 @@
 "use server";
 
+import Tag from "../database/tag.model";
 import User from "../database/user.model";
 import { connectToDatabase } from "../mongoose";
-import { GetTopInteractedTagsParams } from "./shared.types";
+import { GetAllTagsParams, GetTopInteractedTagsParams } from "./shared.types";
 
 export const getTopInteractedTags = async (
   params: GetTopInteractedTagsParams,
@@ -18,6 +19,19 @@ export const getTopInteractedTags = async (
       { _id: "tag1", name: "react" },
       { _id: "tag2", name: "next.js" },
     ];
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const getAllTags = async (params: GetAllTagsParams) => {
+  try {
+    connectToDatabase();
+    // const { filter } = params;
+    const tags = await Tag.find({});
+
+    return { tags };
   } catch (error) {
     console.log(error);
     throw error;

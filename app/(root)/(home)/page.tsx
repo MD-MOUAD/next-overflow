@@ -9,7 +9,7 @@ import { getQuestions } from "@/lib/actions/question.actions";
 import Link from "next/link";
 
 const Home = async () => {
-  const { questions } = await getQuestions({});
+  const { questions } = await getQuestions({ filter: "newest" });
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
