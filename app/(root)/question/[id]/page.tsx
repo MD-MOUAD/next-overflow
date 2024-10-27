@@ -32,7 +32,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
               width={22}
               height={22}
               alt="profile"
-              className="rounded-full"
+              className="size-[22px] rounded-full object-cover"
             />
             <p className="paragraph-semibold text-dark300_light700">
               {question.author.name}

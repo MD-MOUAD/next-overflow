@@ -41,7 +41,7 @@ const AllAnswers = async (props: PropsType) => {
                   width={18}
                   height={18}
                   alt="profile"
-                  className="rounded-full object-cover max-sm:mt-0.5"
+                  className="size-5 rounded-full object-cover max-sm:mt-0.5"
                 />
                 <div className="flex flex-col sm:flex-row sm:items-center">
                   <p className="body-semibold text-dark300_light700">
@@ -53,6 +53,7 @@ const AllAnswers = async (props: PropsType) => {
                   </p>
                 </div>
               </Link>
+
               <div className="flex justify-end">
                 <Votes />
               </div>

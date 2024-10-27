@@ -110,7 +110,7 @@ const Answer = ({ question, questionId, authorId }: Props) => {
                     apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
                     onBlur={field.onBlur}
                     onInit={(evt, editor) => {
-                      // @ts-ignore
+                      // @ts-expect-error ignore this
                       editorRef.current = editor;
                     }}
                     onEditorChange={(content) => field.onChange(content)}
