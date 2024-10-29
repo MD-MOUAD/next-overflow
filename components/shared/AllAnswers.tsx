@@ -17,13 +17,13 @@ interface PropsType {
 }
 
 const AllAnswers = async (props: PropsType) => {
-  const { questionId, totalAnswers } = props;
+  const { questionId, totalAnswers, userId } = props;
   const { answers } = await getAnswers({ questionId });
 
   return (
     <div className="mt-11">
       <div className="flex items-center justify-between">
-        <h3 className="primary-text-gradient">{totalAnswers} Answers</h3>
+        <h3 className="primary-text-gradient">{`${totalAnswers} Answer${totalAnswers > 1 ? "s" : ""}`}</h3>
 
         <Filter filters={AnswerFilters} otherClasses="min-w-[170px]" />
       </div>
@@ -55,7 +55,15 @@ const AllAnswers = async (props: PropsType) => {
               </Link>
 
               <div className="flex justify-end">
-                <Votes />
+                <Votes
+                  type="Answer"
+                  itemId={JSON.stringify(answer._id)}
+                  userId={JSON.stringify(userId)}
+                  upvotes={answer.upvotes.length}
+                  downvotes={answer.downvotes.length}
+                  hasUpvoted={answer.upvotes.includes(userId)}
+                  hasDownvoted={answer.downvotes.includes(userId)}
+                />
               </div>
             </div>
             <ParseHTML data={answer.content} />

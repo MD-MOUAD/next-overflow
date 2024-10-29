@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+// TODO: remove this
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";

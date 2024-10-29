@@ -14,10 +14,10 @@ import Votes from "@/components/shared/Votes";
 
 const Page = async ({ params }: { params: { id: string } }) => {
   const question = await getQuestionById({ questionId: params.id });
-  const { userId } = auth();
+  const { userId: clerkId } = auth();
   let mongoUser;
-  if (userId) {
-    mongoUser = await getUserById({ userId });
+  if (clerkId) {
+    mongoUser = await getUserById({ userId: clerkId });
   }
   return (
     <>
@@ -39,7 +39,16 @@ const Page = async ({ params }: { params: { id: string } }) => {
             </p>
           </Link>
           <div className="flex justify-end">
-            <Votes />
+            <Votes
+              type="Question"
+              itemId={JSON.stringify(question._id)}
+              userId={JSON.stringify(mongoUser?._id)}
+              upvotes={question.upvotes.length}
+              downvotes={question.downvotes.length}
+              hasUpvoted={question.upvotes.includes(mongoUser?._id)}
+              hasDownvoted={question.downvotes.includes(mongoUser?._id)}
+              hasSaved={mongoUser?.saved.includes(question._id)}
+            />
           </div>
         </div>
         <h2 className="h2-semibold text-dark200_light900 mt-3.5 w-full text-left">
@@ -77,7 +86,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
           question.tags.map((tag: any) => (
             <RenderTag
               key={tag._id}
-              _id={tag._id}
+              _id={tag._id} 
               name={tag.name}
               showCount={false}
             />
@@ -87,7 +96,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
 
       <AllAnswers
         questionId={question?._id}
-        userId={JSON.stringify(mongoUser?._id)}
+        userId={mongoUser?._id}
         totalAnswers={question?.answers.length}
       />
       <Answer
