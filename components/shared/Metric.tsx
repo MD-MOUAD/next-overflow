@@ -28,7 +28,7 @@ const Metric = ({
         width={16}
         height={16}
         alt={alt}
-        className={`object-contain ${href ? "rounded-full" : ""}`}
+        className={`${href ? "size-4 rounded-full object-cover" : "object-contain"}`}
       />
 
       <p className={`${textStyles} flex items-center gap-1`}>
@@ -48,7 +48,6 @@ const Metric = ({
       <Link href={href} className="flex-center  gap-1">
         {metricContent}
       </Link>
-      
     );
   }
 
