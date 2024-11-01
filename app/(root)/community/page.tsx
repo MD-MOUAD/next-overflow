@@ -26,7 +26,11 @@ const Page = async () => {
       </div>
       <section className="mt-12 flex flex-wrap gap-4">
         {users.length > 0 ? (
-          users.map((user) => <UserCard key={user._id} user={user} />)
+          users.map((user) => (
+            <div className="flex-center max-sm:w-full" key={user._id}>
+              <UserCard user={user} />
+            </div>
+          ))
         ) : (
           <div className="paragraph-regular text-dark200_light800 mx-auto max-w-4xl text-center">
             <p>No users yet</p>

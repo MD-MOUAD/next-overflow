@@ -21,11 +21,13 @@ const AllAnswers = async (props: PropsType) => {
   const { answers } = await getAnswers({ questionId });
 
   return (
-    <div className="mt-11">
+    <div className="my-11">
       <div className="flex items-center justify-between">
-        <h3 className="primary-text-gradient">{`${totalAnswers} Answer${totalAnswers > 1 ? "s" : ""}`}</h3>
+        <h3 className="primary-text-gradient">{`${totalAnswers} Answer${totalAnswers !== 1 ? "s" : ""}`}</h3>
 
-        <Filter filters={AnswerFilters} otherClasses="min-w-[170px]" />
+        {totalAnswers > 0 && (
+          <Filter filters={AnswerFilters} otherClasses="min-w-[170px]" />
+        )}
       </div>
 
       <div>

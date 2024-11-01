@@ -11,8 +11,9 @@ import { auth } from "@clerk/nextjs/server";
 import { getUserById } from "@/lib/actions/user.actions";
 import AllAnswers from "@/components/shared/AllAnswers";
 import Votes from "@/components/shared/Votes";
+import { ParamsProps } from "@/types";
 
-const Page = async ({ params }: { params: { id: string } }) => {
+const Page = async ({ params }: ParamsProps) => {
   const question = await getQuestionById({ questionId: params.id });
   const { userId: clerkId } = auth();
   let mongoUser;
