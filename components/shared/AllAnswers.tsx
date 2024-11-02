@@ -21,16 +21,22 @@ const AllAnswers = async (props: PropsType) => {
   const { answers } = await getAnswers({ questionId });
 
   return (
-    <div className="mt-11">
+    <div className="my-11">
       <div className="flex items-center justify-between">
-        <h3 className="primary-text-gradient">{`${totalAnswers} Answer${totalAnswers > 1 ? "s" : ""}`}</h3>
+        <h3 className="primary-text-gradient">{`${totalAnswers} Answer${totalAnswers !== 1 ? "s" : ""}`}</h3>
 
-        <Filter filters={AnswerFilters} otherClasses="min-w-[170px]" />
+        {totalAnswers > 0 && (
+          <Filter filters={AnswerFilters} otherClasses="min-w-[170px]" />
+        )}
       </div>
 
       <div>
         {answers.map((answer) => (
-          <article key={answer._id} className="light-border border-b py-10">
+          <article
+            key={answer._id}
+            id={answer._id}
+            className="light-border border-b py-10"
+          >
             <div className="mb-8 flex flex-col-reverse justify-between gap-5 sm:flex-row sm:items-center sm:gap-2">
               <Link
                 href={`/profile/${answer.author.clerkId}`}
@@ -46,6 +52,7 @@ const AllAnswers = async (props: PropsType) => {
                 <div className="flex flex-col sm:flex-row sm:items-center">
                   <p className="body-semibold text-dark300_light700">
                     {answer.author.name}
+                    &nbsp;
                   </p>
 
                   <p className="small-regular text-light400_light500 ml-0.5 mt-0.5 line-clamp-1">

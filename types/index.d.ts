@@ -12,7 +12,7 @@ export interface ThemeContextType {
   toggleTheme: (newTheme: Theme) => void
 }
 
-export interface SidebarLink {
+export interface SidebarLinkTypes {
   imgURL: string;
   route: string;
   label: string;
