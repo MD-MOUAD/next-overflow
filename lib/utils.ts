@@ -22,7 +22,10 @@ export const getTimestamp = (createdAt: Date): string => {
   return formatDistanceToNow(createdAt, { addSuffix: true });
 };
 
-export const formatAndDivideNumber = (num: number, locale: string = "en-US"): string => {
+export const formatAndDivideNumber = (
+  num: number,
+  locale: string = "en-US",
+): string => {
   // Check for edge cases, such as non-numeric values
   if (isNaN(num)) {
     throw new Error("Input must be a valid number");
@@ -41,4 +44,15 @@ export const formatAndDivideNumber = (num: number, locale: string = "en-US"): st
 
   // Return the formatted number
   return formatter.format(num);
+};
+
+export const getJoinedDate = (date: Date): string => {
+  // Extract the month and year from the Date object
+  const month = date?.toLocaleString("default", { month: "long" });
+  const year = date?.getFullYear();
+
+  // Create the joined date string (e.g., "September 2023")
+  const joinedDate = `${month} ${year}`;
+
+  return joinedDate;
 };
