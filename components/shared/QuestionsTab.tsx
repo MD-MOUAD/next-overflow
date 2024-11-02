@@ -7,6 +7,7 @@ interface Props extends SearchParamsProps {
   userId: string;
   clerkId?: string | null;
 }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const QuestionsTab = async ({ searchParams, userId, clerkId }: Props) => {
   const result = await getUserQuestions({ userId });
 
