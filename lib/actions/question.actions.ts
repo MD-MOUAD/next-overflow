@@ -15,6 +15,7 @@ import {
 } from "./shared.types";
 import Answer from "@/database/answer.model";
 import Interaction from "@/database/interaction.model";
+import { FilterQuery } from "mongoose";
 
 export const cerateQuestion = async (params: CreateQuestionParams) => {
   try {
@@ -62,7 +63,15 @@ export const getQuestions = async (params: GetQuestionsParams) => {
   try {
     connectToDatabase();
 
-    const { filter } = params;
+    const { filter, searchQuery } = params;
+    const query: FilterQuery<typeof Question> = {};
+
+    if (searchQuery) {
+      query.$or = [
+        { title: { $regex: new RegExp(searchQuery, "i") } },
+        { content: { $regex: new RegExp(searchQuery, "i") } },
+      ];
+    }
     let sortOptions = {};
 
     switch (filter) {
@@ -79,7 +88,7 @@ export const getQuestions = async (params: GetQuestionsParams) => {
         break;
     }
 
-    const questions = await Question.find({})
+    const questions = await Question.find(query)
       .populate({ path: "tags", model: Tag })
       .populate({ path: "author", model: User })
       .sort(sortOptions);

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-unused-vars */
 "use server";
 import { revalidatePath } from "next/cache";
 import User from "@/database/user.model";
@@ -85,12 +87,19 @@ export async function deleteUser(params: DeleteUserParams) {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getAllUsers = async (params: GetAllUsersParams) => {
   try {
     connectToDatabase();
-    // const { page = 1, pageSize = 20, filter, searchQuery } = params;
-    const users = await User.find({}).sort({ createdAt: -1 });
+    const { page = 1, pageSize = 20, filter, searchQuery } = params;
+    const query: FilterQuery<typeof User> = {};
+
+    if (searchQuery) {
+      query.$or = [
+        { name: { $regex: new RegExp(searchQuery, "i") } },
+        { username: { $regex: new RegExp(searchQuery, "i") } },
+      ];
+    }
+    const users = await User.find(query).sort({ createdAt: -1 });
     return { users };
   } catch (error) {
     console.log(error);

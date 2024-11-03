@@ -1,9 +1,11 @@
 "use client";
 import { Input } from "@/components/ui/input";
+import { formUrlQuery, removeKeysFromQuery } from "@/lib/utils";
 import Image from "next/image";
-import React, { useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 interface customInputProps {
-  // route: string;
+  route: string;
   iconPosition: string;
   imgSrc: string;
   placeholder: string;
@@ -11,13 +13,44 @@ interface customInputProps {
 }
 
 const LocalSearchbar = ({
-  // route, //TODO
+  route,
   iconPosition,
   imgSrc,
   placeholder,
   otherClasses,
 }: customInputProps) => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const query = searchParams.get("q");
+  const [searchTerm, setSearchTerm] = useState(query || "");
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchTerm !== "") {
+        // If there is a search term, update the URL with the new query
+        const newUrl = formUrlQuery({
+          params: searchParams.toString(),
+          key: "q",
+          value: searchTerm,
+        });
+        // Navigate to the new URL without scrolling to the top
+        router.push(newUrl, { scroll: false });
+      } else {
+        if (pathname === route) {
+          const newUrl = removeKeysFromQuery({
+            params: searchParams.toString(),
+            keysToRemove: ["q"],
+          });
+
+          router.push(newUrl, { scroll: false });
+        }
+      }
+    }, 300);
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm, router, route, pathname, searchParams]);
+
   return (
     <div
       className={`background-light800_darkgradient flex min-h-[56px] grow items-center gap-4 rounded-[10px] px-4 ${iconPosition === "right" && "flex-row-reverse"} ${otherClasses}`}
