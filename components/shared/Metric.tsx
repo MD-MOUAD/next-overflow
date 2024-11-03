@@ -32,10 +32,10 @@ const Metric = ({
       />
 
       <p className={`${textStyles} flex items-center gap-1`}>
-        {value}
+        <span className="line-clamp-1">{value}</span>
 
         <span
-          className={`small-regular line-clamp-1 ${isAuthor ? "max-sm:hidden" : ""}`}
+          className={`small-regular line-clamp-1 shrink-0 ${isAuthor ? "max-sm:hidden" : ""}`}
         >
           {title}
         </span>

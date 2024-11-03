@@ -200,7 +200,7 @@ export const getUserAnswers = async (params: GetUserStatsParams) => {
         select: "_id title",
         populate: {
           path: "author", // Populate the author of the question
-          select: "name _id picture",
+          select: "name picture clerkId",
         },
       })
       .populate("author", "clerkId");
