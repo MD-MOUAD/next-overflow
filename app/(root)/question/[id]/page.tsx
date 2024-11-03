@@ -25,7 +25,7 @@ const Page = async ({ params }: ParamsProps) => {
       <div className="flex-start w-full flex-col">
         <div className="flex w-full flex-col-reverse justify-between gap-5 sm:flex-row sm:items-center sm:gap-2 ">
           <Link
-            href={`profile/${question.author.clerkId}`}
+            href={`/profile/${question.author.clerkId}`}
             className="flex items-center justify-start gap-1"
           >
             <Image
@@ -87,7 +87,7 @@ const Page = async ({ params }: ParamsProps) => {
           question.tags.map((tag: any) => (
             <RenderTag
               key={tag._id}
-              _id={tag._id} 
+              _id={tag._id}
               name={tag.name}
               showCount={false}
             />

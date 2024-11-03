@@ -34,8 +34,12 @@ export const getTopInteractedTags = async (
 export const getAllTags = async (params: GetAllTagsParams) => {
   try {
     connectToDatabase();
-    // const { filter } = params;
-    const tags = await Tag.find({});
+    const { searchQuery } = params;
+    const query: FilterQuery<typeof Tag> = {};
+    if (searchQuery) {
+      query.$or = [{ name: { $regex: new RegExp(searchQuery, "i") } }];
+    }
+    const tags = await Tag.find(query);
 
     return { tags };
   } catch (error) {
@@ -67,6 +71,20 @@ export const getQuestionsByTagId = async (
     });
     if (!tag) throw new Error("Tag not found!");
     return { questions: tag.questions, tagTitle: tag.name };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+export const getTopPopularTags = async () => {
+  try {
+    connectToDatabase();
+    const popularTags = await Tag.aggregate([
+      { $project: { name: 1, numberOfQuestions: { $size: "$questions" } } },
+      { $sort: { numberOfQuestions: -1 } },
+      { $limit: 5 },
+    ]);
+    return popularTags;
   } catch (error) {
     console.log(error);
     throw error;

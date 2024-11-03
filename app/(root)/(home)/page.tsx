@@ -6,10 +6,13 @@ import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filters";
 import { getQuestions } from "@/lib/actions/question.actions";
+import { SearchParamsProps } from "@/types";
 import Link from "next/link";
 
-const Home = async () => {
-  const { questions } = await getQuestions({ filter: "newest" });
+const Home = async ({ searchParams }: SearchParamsProps) => {
+  const { questions } = await getQuestions({
+    searchQuery: searchParams.q,
+  });
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
@@ -22,7 +25,7 @@ const Home = async () => {
       </div>
       <div className="mt-11 flex justify-between gap-5 max-sm:flex-col sm:items-center">
         <LocalSearchbar
-          // route='/' //TODO
+          route="/"
           iconPosition="left"
           imgSrc="/assets/icons/search.svg"
           placeholder="Search questions..."
