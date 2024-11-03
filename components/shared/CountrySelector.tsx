@@ -42,7 +42,12 @@ const CountrySelector = ({ onChange }: { onChange: any }) => {
     fetchCountries();
   }, []);
 
-  if (loading) return <p>Loading countries...</p>;
+  if (loading)
+    return (
+      <p className="text-dark300_light700 paragraph-regular">
+        Loading countries...
+      </p>
+    );
 
   return (
     <Select onValueChange={onChange}>
