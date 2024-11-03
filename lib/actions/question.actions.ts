@@ -205,3 +205,20 @@ export const editQuestion = async (params: EditQuestionParams) => {
     throw error;
   }
 };
+
+export const getHotQuestions = async () => {
+  try {
+    connectToDatabase();
+    const hotQuestions = await Question.find({})
+      .sort({
+        views: -1,
+        upvotes: -1,
+      })
+      .limit(5);
+
+    return hotQuestions;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
