@@ -3,12 +3,19 @@ import { getQuestionById } from "@/lib/actions/question.actions";
 import { getUserById } from "@/lib/actions/user.actions";
 import { ParamsProps } from "@/types";
 import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
 const Page = async ({ params }: ParamsProps) => {
   const { userId } = auth();
   if (!userId) return null;
   const mongoUser = await getUserById({ userId });
-  const result = await getQuestionById({ questionId: params.id });
+  const question = await getQuestionById({ questionId: params.id });
+
+  if (userId !== question.author.clerkId) {
+    // TODO toast
+    console.log("not allowed");
+    redirect("/");
+  }
   return (
     <>
       <h1 className="h1-bold text-dark100_light900">Edit Question</h1>
@@ -16,7 +23,7 @@ const Page = async ({ params }: ParamsProps) => {
         <Question
           type="edit"
           mongoUserId={JSON.stringify(mongoUser?._id)}
-          questionDetails={JSON.stringify(result)}
+          questionDetails={JSON.stringify(question)}
         />
       </div>
     </>

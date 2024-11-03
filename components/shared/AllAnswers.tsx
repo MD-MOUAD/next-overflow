@@ -33,8 +33,8 @@ const AllAnswers = async (props: PropsType) => {
       <div>
         {answers.map((answer) => (
           <article
-            key={answer._id}
-            id={answer._id}
+            key={JSON.stringify(answer._id)}
+            id={JSON.stringify(answer._id)}
             className="light-border border-b py-10"
           >
             <div className="mb-8 flex flex-col-reverse justify-between gap-5 sm:flex-row sm:items-center sm:gap-2">
