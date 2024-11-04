@@ -12,6 +12,7 @@ import QuestionTab from "@/components/shared/QuestionsTab";
 import AnswersTab from "@/components/shared/AnswersTab";
 import { auth } from "@clerk/nextjs/server";
 import { getUserInfo } from "@/lib/actions/user.actions";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 const Page = async ({ params, searchParams }: URLProps) => {
   const { userId: clerkId } = auth();
@@ -22,13 +23,27 @@ const Page = async ({ params, searchParams }: URLProps) => {
       <div className="relative flex flex-col-reverse items-start justify-between sm:flex-row">
         <div className="flex flex-col items-start gap-4 lg:flex-row">
           <div className="flex shrink-0 items-center gap-3">
-            <Image
-              src={userInfo?.user.picture}
-              alt="profile picture"
-              width={140}
-              height={140}
-              className="size-28 rounded-full object-cover sm:size-[140px]"
-            />
+            <Dialog>
+              <DialogTrigger>
+                <Image
+                  src={userInfo?.user.picture}
+                  alt="profile picture"
+                  width={140}
+                  height={140}
+                  className="size-28 rounded-full object-cover sm:size-[140px]"
+                />
+              </DialogTrigger>
+              <DialogContent className="flex items-center justify-center rounded-lg border-none bg-black p-0">
+                <Image
+                  src={userInfo?.user.picture}
+                  alt="profile picture"
+                  width={1000}
+                  height={1000}
+                  className=" object-cover sm:rounded-lg"
+                />
+              </DialogContent>
+            </Dialog>
+
             <div className="flex flex-col gap-1 sm:hidden">
               <h2 className="h2-bold text-dark100_light900">
                 {userInfo.user.name}
@@ -40,7 +55,7 @@ const Page = async ({ params, searchParams }: URLProps) => {
           </div>
 
           <div className="mt-3">
-            <div className="max-sm:hidden">
+            <div className="flex flex-col gap-2 max-sm:hidden">
               <h2 className="h2-bold text-dark100_light900">
                 {userInfo.user.name}
               </h2>
