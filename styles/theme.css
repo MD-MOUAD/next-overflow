@@ -144,7 +144,7 @@
   }
 
   .paragraph-semibold {
-    @apply text-[16px] font-semibold leading-[20.8px];
+    @apply text-[16px] font-semibold leading-[20.8px] !important;
   }
 
   .body-regular {
@@ -204,6 +204,6 @@
       232deg,
       rgba(23, 28, 35, 0.41) 0%,
       rgba(19, 22, 28, 0.7) 100%
-    ) !important; 
+    ) !important;
   }
 }
