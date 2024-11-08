@@ -4,11 +4,11 @@ import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { UserFilters } from "@/constants/filters";
 import { getAllUsers } from "@/lib/actions/user.actions";
 import { SearchParamsProps } from "@/types";
-import Link from "next/link";
 
 const Page = async ({ searchParams }: SearchParamsProps) => {
   const { users } = await getAllUsers({
     searchQuery: searchParams.q,
+    filter: searchParams.filter,
   });
 
   return (
@@ -35,12 +35,9 @@ const Page = async ({ searchParams }: SearchParamsProps) => {
             </div>
           ))
         ) : (
-          <div className="paragraph-regular text-dark200_light800 mx-auto max-w-4xl text-center">
-            <p>No users yet</p>
-            <Link href="/sign-up" className="mt-2 font-bold text-accent-blue">
-              Join to be the first!
-            </Link>
-          </div>
+          <p className="paragraph-regular text-dark200_light800 mx-auto max-w-4xl text-center">
+            No users Found!
+          </p>
         )}
       </section>
     </>

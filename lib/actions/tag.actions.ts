@@ -8,7 +8,7 @@ import {
   GetQuestionsByTagIdParams,
   GetTopInteractedTagsParams,
 } from "./shared.types";
-import { FilterQuery } from "mongoose";
+import { FilterQuery, PipelineStage } from "mongoose";
 import Question from "@/database/question.model";
 
 export const getTopInteractedTags = async (
@@ -30,16 +30,46 @@ export const getTopInteractedTags = async (
     throw error;
   }
 };
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 export const getAllTags = async (params: GetAllTagsParams) => {
   try {
     connectToDatabase();
-    const { searchQuery } = params;
+    const { searchQuery, filter } = params;
     const query: FilterQuery<typeof Tag> = {};
+
     if (searchQuery) {
       query.$or = [{ name: { $regex: new RegExp(searchQuery, "i") } }];
     }
-    const tags = await Tag.find(query);
+
+    let sortOptions: PipelineStage[] = [];
+
+    switch (filter) {
+      case "popular":
+        // Sort by the number of questions (i.e., the length of the questions array)
+        sortOptions = [{ $sort: { questionsCount: -1 } }];
+        break;
+      case "recent":
+        sortOptions = [{ $sort: { createdOn: -1 } }];
+        break;
+      case "name":
+        sortOptions = [{ $sort: { name: 1 } }];
+        break;
+      case "old":
+        sortOptions = [{ $sort: { createdOn: 1 } }];
+        break;
+      default:
+        break;
+    }
+
+    const tags = await Tag.aggregate([
+      { $match: query },
+      {
+        $addFields: {
+          questionsCount: { $size: "$questions" },
+        },
+      },
+      ...sortOptions,
+    ]);
 
     return { tags };
   } catch (error) {
@@ -47,6 +77,7 @@ export const getAllTags = async (params: GetAllTagsParams) => {
     throw error;
   }
 };
+
 export const getQuestionsByTagId = async (
   params: GetQuestionsByTagIdParams,
 ) => {
@@ -76,6 +107,7 @@ export const getQuestionsByTagId = async (
     throw error;
   }
 };
+
 export const getTopPopularTags = async () => {
   try {
     connectToDatabase();
