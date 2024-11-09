@@ -68,9 +68,13 @@ export const getQuestions = async (params: GetQuestionsParams) => {
     const query: FilterQuery<typeof Question> = {};
 
     if (searchQuery) {
+      const escapedSearchQuery = searchQuery.replace(
+        /[.*+?^${}()|[\]\\]/g,
+        "\\$&",
+      );
       query.$or = [
-        { title: { $regex: new RegExp(searchQuery, "i") } },
-        { content: { $regex: new RegExp(searchQuery, "i") } },
+        { title: { $regex: new RegExp(escapedSearchQuery, "i") } },
+        { content: { $regex: new RegExp(escapedSearchQuery, "i") } },
       ];
     }
     let sortOptions = {};
