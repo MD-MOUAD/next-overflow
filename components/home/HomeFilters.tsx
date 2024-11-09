@@ -2,29 +2,34 @@
 import { HomePageFilters } from "@/constants/filters";
 import { useState } from "react";
 import { Button } from "../ui/button";
-import { formUrlQuery, removeKeysFromQuery } from "@/lib/utils";
+import { formUpdatedUrlQuery } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
 
 const HomeFilters = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [active, setActive] = useState("");
+  const [active, setActive] = useState(searchParams.get("filter") || "");
 
   const handleFilterClick = (item: string) => {
     if (active === item) {
       setActive(""); // reset active
-      const newUrl = removeKeysFromQuery({
+      const newUrl = formUpdatedUrlQuery({
         params: searchParams.toString(),
-        keysToRemove: ["filter"],
+        updates: {
+          filter: null, // Remove 'filter'
+          page: null, // (reset page to 1)
+        },
       });
 
       router.push(newUrl, { scroll: false });
     } else {
       setActive(item);
-      const newUrl = formUrlQuery({
+      const newUrl = formUpdatedUrlQuery({
         params: searchParams.toString(),
-        key: "filter",
-        value: item.toLowerCase(),
+        updates: {
+          filter: item.toLowerCase(),
+          page: null, // (reset page to 1)
+        },
       });
 
       router.push(newUrl, { scroll: false });

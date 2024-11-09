@@ -8,7 +8,7 @@ import {
   SelectGroup,
 } from "@/components/ui/select";
 import { useRouter, useSearchParams } from "next/navigation";
-import { formUrlQuery } from "@/lib/utils";
+import { formUpdatedUrlQuery } from "@/lib/utils";
 
 interface PropsTypes {
   filters: {
@@ -24,10 +24,12 @@ const Filter = ({ filters, otherClasses, containerClasses }: PropsTypes) => {
   const filterParam = searchParams.get("filter") || undefined;
 
   const handleUpdateParams = (value: string) => {
-    const newUrl = formUrlQuery({
+    const newUrl = formUpdatedUrlQuery({
       params: searchParams.toString(),
-      key: "filter",
-      value,
+      updates: {
+        filter: value,
+        page: null, // initialize page
+      },
     });
 
     router.push(newUrl, { scroll: false });

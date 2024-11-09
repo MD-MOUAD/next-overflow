@@ -13,6 +13,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
+import { useState } from "react";
 
 interface Props {
   type: string;
@@ -22,24 +23,32 @@ interface Props {
 const EditDeleteAction = ({ type, itemId }: Props) => {
   const pathname = usePathname();
   const router = useRouter();
+  const [isDisabled, setIsDisabled] = useState(false);
 
   const handleEdit = () => {
     router.push(`/question/edit/${JSON.parse(itemId)}`);
   };
 
   const handleDelete = async () => {
-    if (type === "Question") {
-      // Delete question
-      await deleteQuestion({
-        questionId: JSON.parse(itemId),
-        path: pathname,
-      });
-    } else if (type === "Answer") {
-      // Delete answer
-      await deleteAnswer({
-        answerId: JSON.parse(itemId),
-        path: pathname,
-      });
+    try {
+      setIsDisabled(true);
+      if (type === "Question") {
+        // Delete question
+        await deleteQuestion({
+          questionId: JSON.parse(itemId),
+          path: pathname,
+        });
+      } else if (type === "Answer") {
+        // Delete answer
+        await deleteAnswer({
+          answerId: JSON.parse(itemId),
+          path: pathname,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsDisabled(false);
     }
   };
 
@@ -81,6 +90,7 @@ const EditDeleteAction = ({ type, itemId }: Props) => {
                   <Button
                     className="paragraph-medium max-h-8 bg-red-600 hover:bg-red-500 dark:bg-red-500 dark:hover:bg-red-400"
                     onClick={handleDelete}
+                    disabled={isDisabled}
                   >
                     Delete
                   </Button>

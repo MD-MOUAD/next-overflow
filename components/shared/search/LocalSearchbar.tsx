@@ -1,6 +1,6 @@
 "use client";
 import { Input } from "@/components/ui/input";
-import { formUrlQuery, removeKeysFromQuery } from "@/lib/utils";
+import { formUpdatedUrlQuery } from "@/lib/utils";
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -30,18 +30,21 @@ const LocalSearchbar = ({
     const delayDebounceFn = setTimeout(() => {
       if (searchTerm !== "") {
         // If there is a search term, update the URL with the new query
-        const newUrl = formUrlQuery({
+        const newUrl = formUpdatedUrlQuery({
           params: searchParams.toString(),
-          key: "q",
-          value: searchTerm,
+          updates: {
+            q: searchTerm,
+          },
         });
         // Navigate to the new URL without scrolling to the top
         router.push(newUrl, { scroll: false });
       } else {
         if (pathname === route) {
-          const newUrl = removeKeysFromQuery({
+          const newUrl = formUpdatedUrlQuery({
             params: searchParams.toString(),
-            keysToRemove: ["q"],
+            updates: {
+              q: null, // remove query parameter 'q'
+            },
           });
 
           router.push(newUrl, { scroll: false });
