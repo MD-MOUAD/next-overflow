@@ -68,7 +68,7 @@ const Home = async ({ searchParams }: SearchParamsProps) => {
           />
         )}
       </div>
-      <div className="mt-10">
+      <div className="mt-10 w-full">
         <Pagination
           pageNumber={parsePageNumber(searchParams.page)}
           hasNextPage={hasNextPage}

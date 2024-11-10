@@ -1,14 +1,17 @@
 import UserCard from "@/components/cards/UserCard";
 import Filter from "@/components/shared/Filter";
+import Pagination from "@/components/shared/Pagination";
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { UserFilters } from "@/constants/filters";
 import { getAllUsers } from "@/lib/actions/user.actions";
+import { parsePageNumber } from "@/lib/utils";
 import { SearchParamsProps } from "@/types";
 
 const Page = async ({ searchParams }: SearchParamsProps) => {
-  const { users } = await getAllUsers({
+  const { users, hasNextPage } = await getAllUsers({
     searchQuery: searchParams.q,
     filter: searchParams.filter,
+    page: parsePageNumber(searchParams.page),
   });
 
   return (
@@ -40,6 +43,12 @@ const Page = async ({ searchParams }: SearchParamsProps) => {
           </p>
         )}
       </section>
+      <div className="w-ful mt-10">
+        <Pagination
+          pageNumber={parsePageNumber(searchParams.page)}
+          hasNextPage={hasNextPage}
+        />
+      </div>
     </>
   );
 };

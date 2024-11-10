@@ -90,7 +90,9 @@ export async function deleteUser(params: DeleteUserParams) {
 export const getAllUsers = async (params: GetAllUsersParams) => {
   try {
     connectToDatabase();
-    const { filter, searchQuery } = params;
+    const { filter, searchQuery, page = 1, pageSize = 20 } = params;
+    const skipAmount = (page - 1) * pageSize;
+
     const query: FilterQuery<typeof User> = {};
 
     if (searchQuery) {
@@ -116,8 +118,15 @@ export const getAllUsers = async (params: GetAllUsersParams) => {
         break;
     }
 
-    const users = await User.find(query).sort(sortOptions);
-    return { users };
+    const users = await User.find(query)
+      .sort(sortOptions)
+      .skip(skipAmount)
+      .limit(pageSize);
+
+    const totalUsers = await User.countDocuments(query);
+    const hasNextPage: boolean = totalUsers > skipAmount + users.length;
+
+    return { users, hasNextPage };
   } catch (error) {
     console.log(error);
     throw error;
@@ -148,7 +157,8 @@ export const ToggleSaveQuestion = async (params: ToggleSaveQuestionParams) => {
 export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
   try {
     connectToDatabase();
-    const { clerkId, searchQuery, filter } = params;
+    const { clerkId, searchQuery, filter, page = 1, pageSize = 20 } = params;
+    const skipAmount = (page - 1) * pageSize;
 
     const query: FilterQuery<typeof Question> = searchQuery
       ? { title: { $regex: new RegExp(searchQuery, "i") } }
@@ -173,6 +183,7 @@ export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
         break;
 
       default:
+        sortOptions = { createdAt: -1 };
         break;
     }
 
@@ -181,6 +192,8 @@ export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
       match: query,
       options: {
         sort: sortOptions,
+        skip: skipAmount,
+        limit: pageSize + 1,
       },
       populate: [
         { path: "tags", model: Tag, select: "_id name" },
@@ -188,7 +201,12 @@ export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
       ],
     });
     if (!user) throw new Error("User not found!");
-    return { savedQuestions: user.saved };
+
+    const hasNextPage: boolean = user.saved.length > pageSize;
+    if (hasNextPage) {
+      user.saved.pop();
+    }
+    return { savedQuestions: user.saved, hasNextPage };
   } catch (error) {
     console.log(error);
     throw error;
@@ -221,15 +239,21 @@ export const getUserInfo = async (params: GetUserByIdParams) => {
 export const getUserQuestions = async (params: GetUserStatsParams) => {
   try {
     connectToDatabase();
-    const { userId } = params;
+    const { userId, page = 1, pageSize = 10 } = params;
+    const skipAmount = (page - 1) * pageSize;
+
     const totalQuestions = await Question.countDocuments({ author: userId });
 
     const userQuestions = await Question.find({ author: userId })
       .sort({ views: -1, upvotes: -1 })
+      .skip(skipAmount)
+      .limit(pageSize)
       .populate("tags", "_id name")
       .populate("author", "_id name picture clerkId ");
 
-    return { questions: userQuestions, totalQuestions };
+    const hasNextPage = totalQuestions > skipAmount + userQuestions.length;
+
+    return { questions: userQuestions, totalQuestions, hasNextPage };
   } catch (error) {
     console.log(error);
     throw error;
@@ -239,11 +263,14 @@ export const getUserQuestions = async (params: GetUserStatsParams) => {
 export const getUserAnswers = async (params: GetUserStatsParams) => {
   try {
     connectToDatabase();
-    const { userId } = params;
+    const { userId, page = 1, pageSize = 10 } = params;
     const totalAnswers = await Answer.countDocuments({ author: userId });
+    const skipAmount = (page - 1) * pageSize;
 
     const userAnswers = await Answer.find({ author: userId })
       .sort({ upvotes: -1 })
+      .skip(skipAmount)
+      .limit(pageSize)
       .populate({
         path: "question",
         select: "_id title",
@@ -254,7 +281,9 @@ export const getUserAnswers = async (params: GetUserStatsParams) => {
       })
       .populate("author", "clerkId");
 
-    return { answers: userAnswers, totalAnswers };
+    const hasNextPage = totalAnswers > skipAmount + userAnswers.length;
+
+    return { answers: userAnswers, totalAnswers, hasNextPage };
   } catch (error) {
     console.log(error);
     throw error;

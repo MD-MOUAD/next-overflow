@@ -2,7 +2,11 @@ import { getQuestionById } from "@/lib/actions/question.actions";
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { formatAndDivideNumber, getTimestamp } from "@/lib/utils";
+import {
+  formatAndDivideNumber,
+  getTimestamp,
+  parsePageNumber,
+} from "@/lib/utils";
 import Metric from "@/components/shared/Metric";
 import ParseHtml from "@/components/shared/ParseHtml";
 import RenderTag from "@/components/shared/RenderTag";
@@ -100,6 +104,7 @@ const Page = async ({ params, searchParams }: URLProps) => {
         userId={mongoUser?._id}
         totalAnswers={question?.answers.length}
         filter={searchParams?.filter}
+        page={parsePageNumber(searchParams.page)}
       />
       <Answer
         question={question?.content}

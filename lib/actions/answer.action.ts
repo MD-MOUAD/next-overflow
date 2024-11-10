@@ -36,7 +36,8 @@ export async function createAnswer(params: CreateAnswerParams) {
 
 export const getAnswers = async (params: GetAnswersParams) => {
   try {
-    const { questionId, sortBy } = params;
+    const { questionId, sortBy, page = 1, pageSize = 10 } = params;
+    const skipAmount = (page - 1) * pageSize;
     let sortOptions = {};
     switch (sortBy) {
       case "highestUpvotes":
@@ -65,6 +66,8 @@ export const getAnswers = async (params: GetAnswersParams) => {
 
       // Stage 3: Sort by the upvote count or creation date
       { $sort: sortOptions },
+      { $skip: skipAmount },
+      { $limit: pageSize },
 
       // Stage 4: Lookup to populate author details
       {
@@ -99,7 +102,11 @@ export const getAnswers = async (params: GetAnswersParams) => {
       },
     ]);
 
-    return { answers };
+    const TotalAnswers = await Answer.countDocuments({ question: questionId });
+
+    const hasNextPage = TotalAnswers > skipAmount + answers.length;
+
+    return { answers, hasNextPage };
   } catch (error) {
     console.log(error);
     throw error;

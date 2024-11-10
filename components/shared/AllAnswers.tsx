@@ -8,12 +8,13 @@ import { getTimestamp } from "@/lib/utils";
 import ParseHTML from "./ParseHtml";
 import Votes from "./Votes";
 import mongoose from "mongoose";
+import Pagination from "./Pagination";
 
 interface PropsType {
   questionId: string;
   userId: string;
   totalAnswers: number;
-  page?: number;
+  page: number;
   filter?: string;
 }
 
@@ -22,10 +23,12 @@ const AllAnswers = async ({
   totalAnswers,
   userId,
   filter,
+  page,
 }: PropsType) => {
-  const { answers } = await getAnswers({
+  const { answers, hasNextPage } = await getAnswers({
     questionId,
     sortBy: filter,
+    page,
   });
 
   const hasUserVoted = (
@@ -97,6 +100,9 @@ const AllAnswers = async ({
             </article>
           );
         })}
+      </div>
+      <div className="mt-10 w-full">
+        <Pagination pageNumber={page} hasNextPage={hasNextPage} />
       </div>
     </div>
   );
