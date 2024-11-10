@@ -27,6 +27,7 @@ const UserSchema = new Schema({
   portfolioWebsite: { type: String },
   reputation: { type: Number, default: 0 },
   saved: [{ type: Schema.Types.ObjectId, ref: "Question" }],
+  interactions: [{ type: Schema.Types.ObjectId, ref: "Interaction" }],
   joinedAt: { type: Date, default: Date.now },
 });
 

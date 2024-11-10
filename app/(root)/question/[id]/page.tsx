@@ -2,7 +2,11 @@ import { getQuestionById } from "@/lib/actions/question.actions";
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { formatAndDivideNumber, getTimestamp } from "@/lib/utils";
+import {
+  formatAndDivideNumber,
+  getTimestamp,
+  parsePageNumber,
+} from "@/lib/utils";
 import Metric from "@/components/shared/Metric";
 import ParseHtml from "@/components/shared/ParseHtml";
 import RenderTag from "@/components/shared/RenderTag";
@@ -11,9 +15,9 @@ import { auth } from "@clerk/nextjs/server";
 import { getUserById } from "@/lib/actions/user.actions";
 import AllAnswers from "@/components/shared/AllAnswers";
 import Votes from "@/components/shared/Votes";
-import { ParamsProps } from "@/types";
+import { URLProps } from "@/types";
 
-const Page = async ({ params }: ParamsProps) => {
+const Page = async ({ params, searchParams }: URLProps) => {
   const question = await getQuestionById({ questionId: params.id });
   const { userId: clerkId } = auth();
   let mongoUser;
@@ -99,6 +103,8 @@ const Page = async ({ params }: ParamsProps) => {
         questionId={question?._id}
         userId={mongoUser?._id}
         totalAnswers={question?.answers.length}
+        filter={searchParams?.filter}
+        page={parsePageNumber(searchParams.page)}
       />
       <Answer
         question={question?.content}

@@ -7,6 +7,7 @@ export interface IInteraction extends Document {
   answer: Schema.Types.ObjectId;
   Tags: Schema.Types.ObjectId[];
   createdAt: Date;
+  updatedAt: Date;
 }
 
 const InteractionSchema = new Schema({
@@ -15,7 +16,8 @@ const InteractionSchema = new Schema({
   question: { type: Schema.Types.ObjectId, ref: "Question" },
   answer: { type: Schema.Types.ObjectId, ref: "Answer" },
   tags: [{ type: Schema.Types.ObjectId, ref: "Tag" }],
-  createdAt: { type: Date, default: Date.now }, 
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
 });
 
 const Interaction =

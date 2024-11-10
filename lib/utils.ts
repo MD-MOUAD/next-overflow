@@ -58,59 +58,40 @@ export const getJoinedDate = (date: Date): string => {
   return joinedDate;
 };
 
-interface UrlQueryParams {
-  params: string; // The current query parameters as a string
-  key: string; // The key of the query parameter to update
-  value: string | null; // The new value for the query parameter
-}
-
-/**
- * Constructs a new URL query string by setting the value for a specified key.
- *
- * @param {UrlQueryParams} param - An object containing the current params, key to update, and its new value.
- * @returns {string} - The updated URL query string.
- */
-export const formUrlQuery = ({
+export const formUpdatedUrlQuery = ({
   params,
-  key,
-  value,
-}: UrlQueryParams): string => {
+  updates,
+}: {
+  params: string;
+  updates: Record<string, string | null>;
+}): string => {
   // Parse the current query parameters into an object
   const currentUrl = qs.parse(params);
 
-  // Set the specified key to the new value
-  currentUrl[key] = value;
+  // Update or add the specified keys to the current query parameters
+  Object.entries(updates).forEach(([key, value]) => {
+    if (value !== null) {
+      currentUrl[key] = value;
+    } else {
+      delete currentUrl[key]; // Remove the key if the value is null
+    }
+  });
 
   // Convert the updated parameters back into a query string format
   return qs.stringifyUrl(
     {
       url: window.location.pathname, // Keep the current path
-      query: currentUrl, // The updated query parameters
+      query: currentUrl,
     },
     { skipNull: true }, // Skip null values in the final query string
   );
 };
 
-interface RemoveUrlQueryParams {
-  params: string;
-  keysToRemove: string[];
-}
+export const parsePageNumber = (page: string | undefined) => {
+  const parsedPage = parseInt(page as string, 10);
 
-export const removeKeysFromQuery = ({
-  params,
-  keysToRemove,
-}: RemoveUrlQueryParams) => {
-  const currentUrl = qs.parse(params);
-
-  keysToRemove.forEach((key) => {
-    delete currentUrl[key];
-  });
-
-  return qs.stringifyUrl(
-    {
-      url: window.location.pathname,
-      query: currentUrl,
-    },
-    { skipNull: true },
-  );
+  if (isNaN(parsedPage) || parsedPage < 1) {
+    return 1;
+  }
+  return parsedPage;
 };

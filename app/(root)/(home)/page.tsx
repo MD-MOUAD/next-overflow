@@ -2,16 +2,20 @@ import QuestionCard from "@/components/cards/QuestionCard";
 import HomeFilters from "@/components/home/HomeFilters";
 import Filter from "@/components/shared/Filter";
 import NoResult from "@/components/shared/NoResult";
+import Pagination from "@/components/shared/Pagination";
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filters";
 import { getQuestions } from "@/lib/actions/question.actions";
+import { parsePageNumber } from "@/lib/utils";
 import { SearchParamsProps } from "@/types";
 import Link from "next/link";
 
 const Home = async ({ searchParams }: SearchParamsProps) => {
-  const { questions } = await getQuestions({
+  const { questions, hasNextPage } = await getQuestions({
     searchQuery: searchParams.q,
+    filter: searchParams.filter,
+    page: parsePageNumber(searchParams.page),
   });
   return (
     <>
@@ -38,11 +42,9 @@ const Home = async ({ searchParams }: SearchParamsProps) => {
           containerClasses="hidden max-md:flex"
         />
       </div>
-
       {/* larger devices filters */}
       <HomeFilters />
-
-      <div className="mt-10 flex w-full flex-col gap-6">
+      <div className="mt-10 flex w-full flex-col gap-6 sm:min-h-[500px]">
         {questions.length > 0 ? (
           questions.map((question) => (
             <QuestionCard
@@ -65,6 +67,12 @@ const Home = async ({ searchParams }: SearchParamsProps) => {
             linkTitle="Ask a Question"
           />
         )}
+      </div>
+      <div className="mt-10 w-full">
+        <Pagination
+          pageNumber={parsePageNumber(searchParams.page)}
+          hasNextPage={hasNextPage}
+        />
       </div>
     </>
   );

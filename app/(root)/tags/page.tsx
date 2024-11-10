@@ -1,13 +1,19 @@
 import Filter from "@/components/shared/Filter";
 import NoResult from "@/components/shared/NoResult";
+import Pagination from "@/components/shared/Pagination";
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
-import { UserFilters } from "@/constants/filters";
+import { TagFilters } from "@/constants/filters";
 import { getAllTags } from "@/lib/actions/tag.actions";
+import { parsePageNumber } from "@/lib/utils";
 import { SearchParamsProps } from "@/types";
 import Link from "next/link";
 
 const Page = async ({ searchParams }: SearchParamsProps) => {
-  const { tags } = await getAllTags({ searchQuery: searchParams.q });
+  const { tags, hasNextPage } = await getAllTags({
+    searchQuery: searchParams.q,
+    filter: searchParams.filter,
+    page: parsePageNumber(searchParams.page),
+  });
 
   return (
     <>
@@ -21,7 +27,7 @@ const Page = async ({ searchParams }: SearchParamsProps) => {
           otherClasses="flex-1"
         />
         <Filter
-          filters={UserFilters}
+          filters={TagFilters}
           otherClasses="min-h-[56px] sm:min-w-[170px]"
         />
       </div>
@@ -41,7 +47,7 @@ const Page = async ({ searchParams }: SearchParamsProps) => {
                 </div>
                 <p className="small-medium text-dark400_light500 mt-3.5 ">
                   <span className="body-semibold primary-text-gradient mr-2.5">
-                    {tag.questions.length}+
+                    {tag.questionsCount}+
                   </span>{" "}
                   Questions
                 </p>
@@ -57,6 +63,12 @@ const Page = async ({ searchParams }: SearchParamsProps) => {
           />
         )}
       </section>
+      <div className="mt-10 w-full">
+        <Pagination
+          pageNumber={parsePageNumber(searchParams.page)}
+          hasNextPage={hasNextPage}
+        />
+      </div>
     </>
   );
 };

@@ -32,9 +32,10 @@ export const cerateQuestion = async (params: CreateQuestionParams) => {
     // Create the tags or get them if they already exist
 
     for (const tag of tags) {
+      const escapedTag = tag.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       const existingTag = await Tag.findOneAndUpdate(
-        // Check if a tag with the same name (case-insensitive) exists
-        { name: { $regex: new RegExp(`^${tag}$`, "i") } },
+        // Check if a tag with the same name exists
+        { name: { $regex: new RegExp(`^${escapedTag}$`, "i") } },
         // If the tag exists, push the new question's ID into the Tag.questions array
         // If it doesn't exist, create a new tag with the given name (upsert operation)
         {
@@ -63,13 +64,19 @@ export const getQuestions = async (params: GetQuestionsParams) => {
   try {
     connectToDatabase();
 
-    const { filter, searchQuery } = params;
+    const { filter, searchQuery, page = 1, pageSize = 10 } = params;
+    const skipAmount = (page - 1) * pageSize;
+
     const query: FilterQuery<typeof Question> = {};
 
     if (searchQuery) {
+      const escapedSearchQuery = searchQuery.replace(
+        /[.*+?^${}()|[\]\\]/g,
+        "\\$&",
+      );
       query.$or = [
-        { title: { $regex: new RegExp(searchQuery, "i") } },
-        { content: { $regex: new RegExp(searchQuery, "i") } },
+        { title: { $regex: new RegExp(escapedSearchQuery, "i") } },
+        { content: { $regex: new RegExp(escapedSearchQuery, "i") } },
       ];
     }
     let sortOptions = {};
@@ -81,18 +88,25 @@ export const getQuestions = async (params: GetQuestionsParams) => {
       case "frequent":
         sortOptions = { views: -1 };
         break;
-      // case "unanswered":
-      //   query.answers = { $size: 0 }
-      //   break;
+      case "unanswered":
+        query.answers = { $size: 0 };
+        break;
       default:
+        sortOptions = { createdAt: -1 };
         break;
     }
 
     const questions = await Question.find(query)
+      .sort(sortOptions)
+      .skip(skipAmount)
+      .limit(pageSize)
       .populate({ path: "tags", model: Tag })
-      .populate({ path: "author", model: User })
-      .sort(sortOptions);
-    return { questions };
+      .populate({ path: "author", model: User });
+
+    const totalQuestions = await Question.countDocuments(query);
+
+    const hasNextPage: boolean = totalQuestions > skipAmount + questions.length;
+    return { questions, hasNextPage };
   } catch (error) {
     console.log(error);
     throw error;
@@ -196,6 +210,7 @@ export const deleteQuestion = async (params: DeleteQuestionParams) => {
     throw error;
   }
 };
+
 export const editQuestion = async (params: EditQuestionParams) => {
   try {
     connectToDatabase();
