@@ -52,7 +52,7 @@ export const getAnswers = async (params: GetAnswersParams) => {
         sortOptions = { createdAt: 1 };
         break;
       default:
-        sortOptions = { createdAt: 1 };
+        sortOptions = { upvoteCount: -1 };
         break;
     }
 

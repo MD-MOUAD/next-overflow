@@ -7,6 +7,7 @@ import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filters";
 import { getQuestions } from "@/lib/actions/question.actions";
+import { parsePageNumber } from "@/lib/utils";
 import { SearchParamsProps } from "@/types";
 import Link from "next/link";
 
@@ -14,7 +15,7 @@ const Home = async ({ searchParams }: SearchParamsProps) => {
   const { questions, hasNextPage } = await getQuestions({
     searchQuery: searchParams.q,
     filter: searchParams.filter,
-    page: searchParams.page ? +searchParams.page : 1,
+    page: parsePageNumber(searchParams.page),
   });
   return (
     <>
@@ -69,7 +70,7 @@ const Home = async ({ searchParams }: SearchParamsProps) => {
       </div>
       <div className="mt-10">
         <Pagination
-          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          pageNumber={parsePageNumber(searchParams.page)}
           hasNextPage={hasNextPage}
         />
       </div>

@@ -86,3 +86,12 @@ export const formUpdatedUrlQuery = ({
     { skipNull: true }, // Skip null values in the final query string
   );
 };
+
+export const parsePageNumber = (page: string | undefined) => {
+  const parsedPage = parseInt(page as string, 10);
+
+  if (isNaN(parsedPage) || parsedPage < 1) {
+    return 1;
+  }
+  return parsedPage;
+};
