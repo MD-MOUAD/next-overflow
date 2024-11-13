@@ -22,6 +22,7 @@ export const cerateQuestion = async (params: CreateQuestionParams) => {
     connectToDatabase();
     const { title, content, tags, author, path } = params;
 
+    // Create the question
     const newQuestion = await Question.create({
       title,
       content,
@@ -52,9 +53,16 @@ export const cerateQuestion = async (params: CreateQuestionParams) => {
 
     revalidatePath(path);
 
-    // Increment author's reputation by +5 for creating a question
-    await User.findByIdAndUpdate(author, { $inc: { reputation: 5 } });
-    // TODO: increment authors reputation by +5 points for creating a question.
+    // Create an interaction record for the user's ask_question action
+    await Interaction.create({
+      user: author,
+      action: "ask_question",
+      question: newQuestion._id,
+      tags: tagDocuments,
+    });
+
+    // Increment author's reputation by +10 for creating a question
+    await User.findByIdAndUpdate(author, { $inc: { reputation: 10 } });
   } catch (error) {
     console.log(error);
   }
@@ -154,7 +162,21 @@ export const upvoteQuestion = async (params: QuestionVoteParams) => {
     });
     if (!question) throw new Error("question not found!");
 
-    // TODO: increment author's reputation by +10
+    if (userId !== question.author) {
+      // This check prevent users from manipulating their own reputation
+
+      // Increment user's reputation by +1/-1 for upvoting/revoking an upvote to the question
+      if (!hasDownvoted) {
+        await User.findByIdAndUpdate(userId, {
+          $inc: { reputation: hasUpvoted ? -1 : 1 },
+        });
+      }
+
+      // Increment author's reputation by +10/-10 for receiving an upvote/downvote to the question
+      await User.findByIdAndUpdate(question.author, {
+        $inc: { reputation: hasUpvoted ? -10 : hasDownvoted ? 20 : 10 },
+      });
+    }
     revalidatePath(path);
   } catch (error) {
     console.log(error);
@@ -183,7 +205,17 @@ export const downvoteQuestion = async (params: QuestionVoteParams) => {
     });
     if (!question) throw new Error("question not found!");
 
-    // TODO: increment author's reputation by +10
+    if (userId !== question.author) {
+      if (!hasUpvoted)
+        await User.findByIdAndUpdate(userId, {
+          $inc: { reputation: hasDownvoted ? -1 : 1 },
+        });
+
+      await User.findByIdAndUpdate(question.author, {
+        $inc: { reputation: hasDownvoted ? 10 : hasUpvoted ? -20 : -10 },
+      });
+    }
+
     revalidatePath(path);
   } catch (error) {
     console.log(error);
