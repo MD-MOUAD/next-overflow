@@ -289,13 +289,3 @@ export const getUserAnswers = async (params: GetUserStatsParams) => {
     throw error;
   }
 };
-
-// copy and past:
-// export const name = async (params: paramsTypes) => {
-//   try {
-//     connectToDatabase();
-//   } catch (error) {
-//     console.log(error);
-//     throw error
-//   }
-// };

@@ -68,6 +68,11 @@ export const formUpdatedUrlQuery = ({
   // Parse the current query parameters into an object
   const currentUrl = qs.parse(params);
 
+  // Extract the hash part if it exists
+  const hashIndex = window.location.href.indexOf("#");
+  const hash =
+    hashIndex !== -1 ? window.location.href.substring(hashIndex) : "";
+
   // Update or add the specified keys to the current query parameters
   Object.entries(updates).forEach(([key, value]) => {
     if (value !== null) {
@@ -78,13 +83,16 @@ export const formUpdatedUrlQuery = ({
   });
 
   // Convert the updated parameters back into a query string format
-  return qs.stringifyUrl(
+  const updatedUrl = qs.stringifyUrl(
     {
-      url: window.location.pathname, // Keep the current path
+      url: window.location.pathname,
       query: currentUrl,
     },
-    { skipNull: true }, // Skip null values in the final query string
+    { skipNull: true },
   );
+
+  // Append the hash back to the URL if it exists
+  return `${updatedUrl}${hash}`;
 };
 
 export const parsePageNumber = (page: string | undefined) => {

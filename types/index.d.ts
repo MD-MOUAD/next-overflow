@@ -8,8 +8,8 @@ export interface ThemeItem {
   icon: string;
 }
 export interface ThemeContextType {
-  theme : Theme;
-  toggleTheme: (newTheme: Theme) => void
+  theme: Theme;
+  toggleTheme: (newTheme: Theme) => void;
 }
 
 export interface SidebarLinkTypes {
@@ -53,3 +53,9 @@ export interface BadgeCounts {
   BRONZE: number;
 }
 export type BadgeCriteriaType = keyof typeof BADGE_CRITERIA;
+
+export interface GlobalSearchResults {
+  id: "string";
+  title: "string";
+  type: "string";
+}
