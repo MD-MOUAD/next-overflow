@@ -9,7 +9,12 @@ import { HomePageFilters } from "@/constants/filters";
 import { getQuestions } from "@/lib/actions/question.actions";
 import { parsePageNumber } from "@/lib/utils";
 import { SearchParamsProps } from "@/types";
+import { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Home | Next Overflow",
+};
 
 const Home = async ({ searchParams }: SearchParamsProps) => {
   const { questions, hasNextPage } = await getQuestions({
