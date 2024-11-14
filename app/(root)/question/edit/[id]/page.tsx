@@ -1,4 +1,5 @@
 import Question from "@/components/forms/Question";
+import { toast } from "@/hooks/use-toast";
 import { getQuestionById } from "@/lib/actions/question.actions";
 import { getUserById } from "@/lib/actions/user.actions";
 import { ParamsProps } from "@/types";
@@ -12,8 +13,6 @@ const Page = async ({ params }: ParamsProps) => {
   const question = await getQuestionById({ questionId: params.id });
 
   if (userId !== question.author.clerkId) {
-    // TODO toast
-    console.log("not allowed");
     redirect("/");
   }
   return (
