@@ -6,6 +6,11 @@ import { UserFilters } from "@/constants/filters";
 import { getAllUsers } from "@/lib/actions/user.actions";
 import { parsePageNumber } from "@/lib/utils";
 import { SearchParamsProps } from "@/types";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Community | Next Overflow",
+};
 
 const Page = async ({ searchParams }: SearchParamsProps) => {
   const { users, hasNextPage } = await getAllUsers({
@@ -47,6 +52,7 @@ const Page = async ({ searchParams }: SearchParamsProps) => {
         <Pagination
           pageNumber={parsePageNumber(searchParams.page)}
           hasNextPage={hasNextPage}
+          pageHasResults={users.length > 0}
         />
       </div>
     </>

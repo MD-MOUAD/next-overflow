@@ -4,11 +4,13 @@ import { Button } from "../ui/button";
 import { formUpdatedUrlQuery } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
 
-interface Props {
+interface PropsTypes {
   pageNumber: number;
   hasNextPage: boolean;
+  pageHasResults?: boolean;
 }
-const Pagination = ({ pageNumber, hasNextPage }: Props) => {
+const Pagination = (props: PropsTypes) => {
+  const { pageNumber, hasNextPage, pageHasResults = true } = props;
   const router = useRouter();
   const searchParams = useSearchParams();
   const handleNavigation = (direction: string) => {
@@ -24,7 +26,7 @@ const Pagination = ({ pageNumber, hasNextPage }: Props) => {
     router.push(newUrl);
   };
 
-  if (pageNumber === 1 && !hasNextPage) return null;
+  if (!pageHasResults || (pageNumber === 1 && !hasNextPage)) return null;
 
   return (
     <div className="flex-center w-full gap-2">

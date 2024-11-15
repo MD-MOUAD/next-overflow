@@ -18,13 +18,8 @@ interface PropsType {
   filter?: string;
 }
 
-const AllAnswers = async ({
-  questionId,
-  totalAnswers,
-  userId,
-  filter,
-  page,
-}: PropsType) => {
+const AllAnswers = async (props: PropsType) => {
+  const { questionId, totalAnswers, userId, filter, page } = props;
   const { answers, hasNextPage } = await getAnswers({
     questionId,
     sortBy: filter,

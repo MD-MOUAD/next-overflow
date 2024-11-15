@@ -13,6 +13,11 @@ import AnswersTab from "@/components/shared/AnswersTab";
 import { auth } from "@clerk/nextjs/server";
 import { getUserInfo } from "@/lib/actions/user.actions";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Profile | Next Overflow",
+};
 
 const Page = async ({ params, searchParams }: URLProps) => {
   const { userId: clerkId } = auth();

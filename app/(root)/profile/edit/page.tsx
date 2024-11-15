@@ -1,6 +1,11 @@
 import Profile from "@/components/forms/Profile";
 import { getUserById } from "@/lib/actions/user.actions";
 import { auth } from "@clerk/nextjs/server";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Edit Profile | Next Overflow",
+};
 
 const Page = async () => {
   const { userId } = auth();

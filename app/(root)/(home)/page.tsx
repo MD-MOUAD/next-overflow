@@ -22,6 +22,7 @@ const Home = async ({ searchParams }: SearchParamsProps) => {
     filter: searchParams.filter,
     page: parsePageNumber(searchParams.page),
   });
+
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
@@ -64,10 +65,17 @@ const Home = async ({ searchParams }: SearchParamsProps) => {
               createdAt={question.createdAt}
             />
           ))
-        ) : (
+        ) : parsePageNumber(searchParams.page) === 1 ? (
           <NoResult
             title="There’s no question to show"
             description="Be the first to break the silence! 🚀 Ask a Question and kickstart the discussion. our query could be the next big thing others learn from. Get involved! 💡"
+            link="/ask-question"
+            linkTitle="Ask a Question"
+          />
+        ) : (
+          <NoResult
+            title="Page Not found :("
+            description="The page you are looking for can not be found"
             link="/ask-question"
             linkTitle="Ask a Question"
           />
@@ -77,6 +85,7 @@ const Home = async ({ searchParams }: SearchParamsProps) => {
         <Pagination
           pageNumber={parsePageNumber(searchParams.page)}
           hasNextPage={hasNextPage}
+          pageHasResults={questions.length > 0}
         />
       </div>
     </>
