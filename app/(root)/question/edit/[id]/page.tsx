@@ -1,5 +1,4 @@
 import Question from "@/components/forms/Question";
-import { toast } from "@/hooks/use-toast";
 import { getQuestionById } from "@/lib/actions/question.actions";
 import { getUserById } from "@/lib/actions/user.actions";
 import { ParamsProps } from "@/types";
