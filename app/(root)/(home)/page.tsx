@@ -6,9 +6,13 @@ import Pagination from "@/components/shared/Pagination";
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filters";
-import { getQuestions } from "@/lib/actions/question.actions";
+import {
+  getQuestions,
+  getRecommendedQuestions,
+} from "@/lib/actions/question.actions";
 import { parsePageNumber } from "@/lib/utils";
 import { SearchParamsProps } from "@/types";
+import { auth } from "@clerk/nextjs/server";
 import { Metadata } from "next";
 import Link from "next/link";
 
@@ -17,11 +21,29 @@ export const metadata: Metadata = {
 };
 
 const Home = async ({ searchParams }: SearchParamsProps) => {
-  const { questions, hasNextPage } = await getQuestions({
-    searchQuery: searchParams.q,
-    filter: searchParams.filter,
-    page: parsePageNumber(searchParams.page),
-  });
+  const { userId } = auth();
+  let results;
+
+  if (searchParams?.filter === "recommended") {
+    if (userId) {
+      console.log("recommended && userId");
+      results = await getRecommendedQuestions({
+        userId,
+        searchQuery: searchParams.q,
+        page: parsePageNumber(searchParams.page),
+      });
+    } else {
+      console.log("recommended");
+
+      results = { questions: [], hasNextPage: false };
+    }
+  } else {
+    results = await getQuestions({
+      searchQuery: searchParams.q,
+      filter: searchParams.filter,
+      page: parsePageNumber(searchParams.page),
+    });
+  }
 
   return (
     <>
@@ -51,8 +73,8 @@ const Home = async ({ searchParams }: SearchParamsProps) => {
       {/* larger devices filters */}
       <HomeFilters />
       <div className="mt-10 flex w-full flex-col gap-6 sm:min-h-[500px]">
-        {questions.length > 0 ? (
-          questions.map((question) => (
+        {results.questions.length > 0 ? (
+          results.questions.map((question) => (
             <QuestionCard
               key={question._id}
               _id={question._id}
@@ -84,8 +106,8 @@ const Home = async ({ searchParams }: SearchParamsProps) => {
       <div className="mt-10 w-full">
         <Pagination
           pageNumber={parsePageNumber(searchParams.page)}
-          hasNextPage={hasNextPage}
-          pageHasResults={questions.length > 0}
+          hasNextPage={results.hasNextPage}
+          pageHasResults={results.questions.length > 0}
         />
       </div>
     </>
