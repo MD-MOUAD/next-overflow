@@ -135,3 +135,35 @@ export const assignBadges = (params: BadgeParam) => {
 
   return badgeCounts;
 };
+
+export const getMostFrequent = (arr: any[], limit: number | undefined) => {
+  // Step 1: Count occurrences
+  const countMap = new Map<number, { item: any; count: number }>();
+
+  arr.forEach((obj) => {
+    // Step 1: Try to get the entry from the countMap using obj.id
+    const entry = countMap.get(obj._id);
+
+    // Step 2: Check if the entry exists
+    if (entry) {
+      // If it exists, increment the count for that entry
+      entry.count++;
+    } else {
+      // If it doesn't exist, add a new entry with the current object and set count to 1
+      countMap.set(obj._id, { item: obj, count: 1 });
+    }
+  });
+
+  // Step 2: Sort by count in descending order
+  const sortedItems = Array.from(countMap.values()).sort(
+    (a, b) => b.count - a.count,
+  );
+
+  // Step 3: Apply the limit if provided, otherwise return all items
+  if (limit) {
+    return sortedItems.slice(0, limit).map((entry) => entry.item);
+  }
+
+  // Return all items if no limit is provided
+  return sortedItems.map((entry) => entry.item);
+};

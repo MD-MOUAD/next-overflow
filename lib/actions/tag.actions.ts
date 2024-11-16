@@ -10,21 +10,35 @@ import {
 } from "./shared.types";
 import { FilterQuery } from "mongoose";
 import Question from "@/database/question.model";
+import Interaction from "@/database/interaction.model";
+import { getMostFrequent } from "../utils";
 
 export const getTopInteractedTags = async (
   params: GetTopInteractedTagsParams,
 ) => {
   try {
     connectToDatabase();
-    const { userId } = params;
-    const user = await User.findById(userId);
+    const { userId, limit } = params;
+    const user = await User.findOne({ clerkId: userId });
     if (!user) throw new Error("User not found");
 
-    // TODO: find all interactions for the user and group them by tags;
-    return [
-      { _id: "tag1", name: "react" },
-      { _id: "tag2", name: "next.js" },
-    ];
+    // Find the user's interactions
+    const userInteractions = await Interaction.find({ user: user._id })
+      .populate("tags")
+      .exec();
+
+    // Extract tags from user's interactions
+    const userTags = userInteractions.reduce((tags, interaction) => {
+      if (interaction.tags) {
+        tags = tags.concat(interaction.tags);
+      }
+      return tags;
+    }, []);
+
+    // Get distinct tag from user's interactions
+    const topUserTags = getMostFrequent(userTags, limit);
+
+    return topUserTags;
   } catch (error) {
     console.log(error);
     throw error;
