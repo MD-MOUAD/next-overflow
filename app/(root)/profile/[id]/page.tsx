@@ -14,6 +14,8 @@ import { auth } from "@clerk/nextjs/server";
 import { getUserInfo } from "@/lib/actions/user.actions";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Metadata } from "next";
+import RenderTag from "@/components/shared/RenderTag";
+import { getTopInteractedTags } from "@/lib/actions/tag.actions";
 
 export const metadata: Metadata = {
   title: "Profile | Next Overflow",
@@ -22,7 +24,7 @@ export const metadata: Metadata = {
 const Page = async ({ params, searchParams }: URLProps) => {
   const { userId: clerkId } = auth();
   const userInfo = await getUserInfo({ userId: params.id });
-
+  const TopTags = await getTopInteractedTags({ userId: params.id, limit: 10 });
   return (
     <>
       <div className="relative flex flex-col-reverse items-start justify-between sm:flex-row">
@@ -103,7 +105,7 @@ const Page = async ({ params, searchParams }: URLProps) => {
           <SignedIn>
             {clerkId === userInfo.user.clerkId && (
               <Link href="/profile/edit">
-                <Button className="paragraph-medium btn-secondary text-dark300_light900 min-h-[46px] min-w-[150px] px-4 py-3 sm:min-w-[175px]">
+                <Button className="paragraph-medium btn-tertiary text-dark300_light900 hover:btn-secondary min-h-[46px] min-w-[150px] px-4 py-3 sm:min-w-[175px]">
                   Edit Profile
                 </Button>
               </Link>
@@ -144,6 +146,22 @@ const Page = async ({ params, searchParams }: URLProps) => {
             />
           </TabsContent>
         </Tabs>
+        <div className="flex min-w-[278px] flex-col max-lg:hidden">
+          <h3 className="h3-bold text-dark200_light900">Top Tags</h3>
+          <div className="mt-7 flex flex-col gap-4">
+            {TopTags.map((tag) => {
+              return (
+                <RenderTag
+                  key={tag._id}
+                  _id={tag._id}
+                  name={tag.name}
+                  totalQuestions={tag.questions.length}
+                  showCount={true}
+                />
+              );
+            })}
+          </div>
+        </div>
       </div>
     </>
   );

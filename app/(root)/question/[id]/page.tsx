@@ -106,11 +106,13 @@ const Page = async ({ params, searchParams }: URLProps) => {
         filter={searchParams?.filter}
         page={parsePageNumber(searchParams.page)}
       />
-      <Answer
-        question={question?.content}
-        questionId={JSON.stringify(question?._id)}
-        authorId={JSON.stringify(mongoUser?._id)}
-      />
+      {clerkId && (
+        <Answer
+          question={question?.content}
+          questionId={JSON.stringify(question?._id)}
+          authorId={JSON.stringify(mongoUser?._id)}
+        />
+      )}
     </>
   );
 };
