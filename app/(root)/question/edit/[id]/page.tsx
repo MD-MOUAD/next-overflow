@@ -12,8 +12,6 @@ const Page = async ({ params }: ParamsProps) => {
   const question = await getQuestionById({ questionId: params.id });
 
   if (userId !== question.author.clerkId) {
-    // TODO toast
-    console.log("not allowed");
     redirect("/");
   }
   return (

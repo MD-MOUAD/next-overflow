@@ -67,6 +67,7 @@ const Page = async ({ searchParams }: SearchParamsProps) => {
         <Pagination
           pageNumber={parsePageNumber(searchParams.page)}
           hasNextPage={hasNextPage}
+          pageHasResults={tags.length > 0}
         />
       </div>
     </>

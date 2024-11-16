@@ -1,4 +1,5 @@
 "use client";
+import { toast } from "@/hooks/use-toast";
 import { downvoteAnswer, upvoteAnswer } from "@/lib/actions/answer.action";
 import { viewQuestion } from "@/lib/actions/interaction.action";
 import {
@@ -32,19 +33,28 @@ const Votes = ({
   hasSaved,
 }: PropsTypes) => {
   const pathname = usePathname();
+  const loginRequired = {
+    title: "Login Required",
+    description: "You must be logged in to perform this action",
+  };
   const handleSave = async () => {
     if (!userId) {
-      return;
+      return toast(loginRequired);
     }
     await ToggleSaveQuestion({
       userId: JSON.parse(userId),
       questionId: JSON.parse(itemId),
       path: pathname,
     });
+
+    return toast({
+      title: `Question ${!hasSaved ? "Saved in" : "Removed from"} your collection`,
+      variant: !hasSaved ? "default" : "destructive",
+    });
   };
   const handleVote = async (action: string) => {
     if (!userId) {
-      return;
+      return toast(loginRequired);
     }
     const sharedVoteParams = {
       userId: JSON.parse(userId),
@@ -66,8 +76,10 @@ const Votes = ({
       } else if (type === "Answer") {
         await upvoteAnswer(AnswerVoteParams);
       }
-      // Todo: show a toast
-      return;
+      return toast({
+        title: `Upvote ${!hasUpvoted ? "Successful" : "Removed"}`,
+        variant: !hasUpvoted ? "default" : "destructive",
+      });
     }
     if (action === "downvote") {
       if (type === "Question") {
@@ -75,7 +87,10 @@ const Votes = ({
       } else if (type === "Answer") {
         await downvoteAnswer(AnswerVoteParams);
       }
-      // Todo: show a toast
+      return toast({
+        title: `Downvote ${!hasDownvoted ? "Successful" : "Removed"}`,
+        variant: !hasDownvoted ? "default" : "destructive",
+      });
     }
   };
 

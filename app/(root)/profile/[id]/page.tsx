@@ -13,6 +13,11 @@ import AnswersTab from "@/components/shared/AnswersTab";
 import { auth } from "@clerk/nextjs/server";
 import { getUserInfo } from "@/lib/actions/user.actions";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Profile | Next Overflow",
+};
 
 const Page = async ({ params, searchParams }: URLProps) => {
   const { userId: clerkId } = auth();
@@ -109,13 +114,9 @@ const Page = async ({ params, searchParams }: URLProps) => {
 
       <Stats
         reputation={userInfo?.user.reputation}
-        totalQuestions={userInfo.totalQuestions}
-        totalAnswers={userInfo.totalAnswers}
-        badges={{
-          GOLD: 0,
-          SILVER: 0,
-          BRONZE: 0,
-        }}
+        totalQuestions={userInfo?.totalQuestions}
+        totalAnswers={userInfo?.totalAnswers}
+        badges={userInfo?.badgeCounts}
       />
 
       <div className="mt-10 flex gap-10">

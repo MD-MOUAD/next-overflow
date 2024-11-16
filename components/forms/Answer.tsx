@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // TODO: remove this
 "use client";
 
@@ -32,7 +31,7 @@ interface Props {
 const Answer = ({ question, questionId, authorId }: Props) => {
   const { theme } = useTheme();
   const editorRef = useRef(null);
-  const pathname = usePathname() ;
+  const pathname = usePathname();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmittingAI, setIsSubmittingAI] = useState(false);
 
@@ -50,7 +49,7 @@ const Answer = ({ question, questionId, authorId }: Props) => {
 
     try {
       await createAnswer({
-        content: values.answer, // get answer from form values 
+        content: values.answer, // get answer from form values
         author: JSON.parse(authorId),
         question: JSON.parse(questionId),
         path: pathname,
@@ -59,7 +58,6 @@ const Answer = ({ question, questionId, authorId }: Props) => {
       form.reset();
 
       if (editorRef.current) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const editor = editorRef.current as any;
         editor.setContent("");
       }
@@ -67,6 +65,39 @@ const Answer = ({ question, questionId, authorId }: Props) => {
       console.log(error);
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const generateAIAnswer = async () => {
+    if (!authorId) return;
+
+    setIsSubmittingAI(true);
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/chatgpt`,
+        {
+          method: "POST",
+          body: JSON.stringify({ question }),
+        },
+      );
+
+      const aiAnswer = await response.json();
+
+      // Convert plain text to HTML format
+
+      const formattedAnswer = aiAnswer.reply.replace(/\n/g, "<br />");
+
+      if (editorRef.current) {
+        const editor = editorRef.current as any;
+        editor.setContent(formattedAnswer);
+      }
+
+      // Toast...
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsSubmittingAI(false);
     }
   };
 
@@ -79,7 +110,7 @@ const Answer = ({ question, questionId, authorId }: Props) => {
 
         <Button
           className="btn light-border-2 gap-1.5 rounded-md px-4 py-2.5 text-primary-500 shadow-none dark:text-primary-500"
-          onClick={() => {}}
+          onClick={generateAIAnswer}
         >
           {isSubmittingAI ? (
             <>Generating...</>
